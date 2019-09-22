@@ -4,34 +4,36 @@ import { useInterval } from '@slynch13/useinterval'
 
 const App = () => {
   let [state, setState] = useState(0)
-  let [last, setLast] = useState('')
   let [count, setCount] = useState(0)
+  let [speed, setSpeed] = useState(1000)
+  let delay = 1000
   const debounced = useDebounce((display) => {
     setState(x => x + 1)
-    setLast(display)
-    console.log('Executing')
-  }, 3000)
+  }, delay)
   let interval = useInterval(() => {
-    console.log('Test')
     setCount(x => x + 1)
     debounced()
-  }, 1000)
+  }, 500)
 
   useEffect(() => {
-    if (count > 10) {
-      interval.changeTimeout(2000)
-    }
-    if (count > 20) {
-      interval.changeTimeout(3000)
-    }
-    if (count > 30) {
-      interval.changeTimeout(4000)
+    if (count % 100 < 10) {
+      setSpeed(500)
+    } else if (count % 100 < 20) {
+      setSpeed(1000)
+    } else if (count % 100 < 30) {
+      setSpeed(2000)
+    } else {
+      setSpeed(100)
     }
   }, [count])
+  useEffect(() => {
+    interval.changeTimeout(speed)
+  }, [speed])
   return (
     <div>
-      {state}
-      <div>{last}</div>
+      <div>Delay: {delay}ms</div>
+      <div>Speed: {speed}ms</div>
+      <div>State: {state}</div>
       <div>Executed: {count}</div>
     </div>
   )

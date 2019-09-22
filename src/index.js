@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 export const useDebounce = (func, delay) => {
   let timer = useRef()
