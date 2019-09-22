@@ -1,21 +1,24 @@
-import * as React from 'react'
+import { useCallback, useState, useRef } from 'react'
 
-export const useMyHook = () => {
-  let [{
-    counter
-  }, setState] = React.useState({
-    counter: 0
-  })
-
-  React.useEffect(() => {
-    let interval = window.setInterval(() => {
-      counter++
-      setState({counter})
-    }, 1000)
-    return () => {
-      window.clearInterval(interval)
+export const useDebounce = (func, delay) => {
+  let timer = useRef()
+  let debounced = (...args) => {
+    if (timer.current) {
+      console.log('Bounced', delay)
+      let oldTimeout = timer.current
+      clearTimeout(oldTimeout)
+      timer.current = setTimeout(() => {
+        console.log('Test')
+        timer.current = undefined
+      }, delay)
+      return
     }
-  }, [])
+    timer.current = setTimeout(() => {
+      console.log('Test2')
+      timer.current = undefined
+    }, delay)
+    func(args || [])
+  }
 
-  return counter
+  return useCallback(debounced)
 }

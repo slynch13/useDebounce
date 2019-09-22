@@ -1,7 +1,7 @@
-import { useMyHook } from './'
+import { useDebounce } from './'
 
-describe('useMyHook', () => {
+describe('useDebounce', () => {
   it('is truthy', () => {
-    expect(useMyHook).toBeTruthy()
+    expect(useDebounce).toBeTruthy()
   })
 })
