@@ -35,6 +35,7 @@ const App = () => {
       <div>Speed: {speed}ms</div>
       <div>State: {state}</div>
       <div>Executed: {count}</div>
+      <div><button onClick={() => { debounced.force() }}>Force</button></div>
     </div>
   )
 }
