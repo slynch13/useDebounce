@@ -1,7 +1,9 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
-export const useDebounce = (func, delay) => {
+export const useDebounce = (func, delay, maxWait) => {
   let timer = useRef()
+  let [wait, setWait] = useState(maxWait)
+  let lastExecute = useRef()
 
   let resetTimer = () => {
     let oldTimeout = timer.current
@@ -10,23 +12,29 @@ export const useDebounce = (func, delay) => {
       timer.current = undefined
     }, delay)
   }
-
+  let execute = (...args) => {
+    lastExecute.current = Date.now()
+    func(args)
+  }
   let debounced = (...args) => {
-    if (timer.current) {
+    let diff = Date.now() - lastExecute.current
+    if ((wait === undefined || diff < wait) &&
+      timer.current !== undefined) {
       resetTimer()
       return
     }
     timer.current = setTimeout(() => {
       timer.current = undefined
     }, delay)
-    func(args || [])
+    execute(args || [])
   }
 
   let callback = useCallback(debounced)
   callback.force = (...args) => {
     resetTimer()
-    func(args || [])
+    execute(args)
   }
+  callback.setWait = setWait
 
   return callback
 }

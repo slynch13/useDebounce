@@ -7,9 +7,10 @@ const App = () => {
   let [count, setCount] = useState(0)
   let [speed, setSpeed] = useState(1000)
   let delay = 1000
+  let maxWait = 1000
   const debounced = useDebounce((display) => {
     setState(x => x + 1)
-  }, delay)
+  }, delay, maxWait)
   let interval = useInterval(() => {
     setCount(x => x + 1)
     debounced()
@@ -32,6 +33,7 @@ const App = () => {
   return (
     <div>
       <div>Delay: {delay}ms</div>
+      <div>Max Wait: {maxWait}ms</div>
       <div>Speed: {speed}ms</div>
       <div>State: {state}</div>
       <div>Executed: {count}</div>
