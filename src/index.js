@@ -4,7 +4,6 @@ export const useDebounce = (func, delay, maxWait) => {
   let timer = useRef()
   let [wait, setWait] = useState(maxWait)
   let lastExecute = useRef()
-
   let resetTimer = () => {
     let oldTimeout = timer.current
     clearTimeout(oldTimeout)
