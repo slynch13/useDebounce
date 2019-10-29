@@ -1,13 +1,13 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { useDebounce } from './'
+import { useDebounce, executeStart } from './'
 import PropTypes from 'prop-types'
 
 const realDateNow = Date.now.bind(global.Date)
 jest.useFakeTimers()
 const obj = {}
-const Debounced = ({ fn, delay, maxWait }) => {
-  let debounced = useDebounce(fn, delay || 1000, maxWait)
+const Debounced = ({ fn, delay, maxWait, tail, head }) => {
+  let debounced = useDebounce(fn, delay || 1000, maxWait, { tail: tail, head: head })
   obj.debounced = debounced
   return <></>
 }
@@ -15,7 +15,10 @@ const Debounced = ({ fn, delay, maxWait }) => {
 Debounced.propTypes = {
   fn: PropTypes.func,
   delay: PropTypes.number,
-  maxWait: PropTypes.number
+  maxWait: PropTypes.number,
+  tail: PropTypes.bool,
+  head: PropTypes.bool
+
 }
 
 beforeEach(() => {
@@ -52,9 +55,10 @@ describe('useDebounce', () => {
     render(<Debounced fn={func} />)
     obj.debounced(1)
     jest.advanceTimersByTime(1000)
-    obj.debounced(1)
-    obj.debounced(1)
+    obj.debounced(2)
+    obj.debounced(3)
     expect(func.mock.calls.length).toBe(2)
+    expect(func.mock.calls[0]).toEqual([1])
   })
 
   it('function should not be called called multiple times within limit', () => {
@@ -115,5 +119,15 @@ describe('useDebounce', () => {
     obj.debounced(1, 2)
     expect(func.mock.calls.length).toBe(1)
     expect(func.mock.calls[0]).toEqual([1, 2])
+  })
+  it('function should be executed with parameters of last call if tail is true', () => {
+    const func = jest.fn(x => console.log('Test', x))
+    render(<Debounced fn={func} delay={2000} maxWait={1900} tail={true} />)
+    obj.debounced(1)
+    obj.debounced(2)
+    obj.debounced(3)
+    expect(func.mock.calls.length).toBe(1)
+    expect(func.mock.calls[0][0][0]).toBe(1)
+    expect(func.mock.calls[1][0]).toBe(3)
   })
 })
