@@ -11,9 +11,9 @@ export const useDebounce = (func, delay, maxWait) => {
       timer.current = undefined
     }, delay)
   }
-  let execute = (...args) => {
+  let execute = (args) => {
     lastExecute.current = Date.now()
-    func(args)
+    func(...args)
   }
   let debounced = (...args) => {
     let diff = Date.now() - lastExecute.current
@@ -29,7 +29,7 @@ export const useDebounce = (func, delay, maxWait) => {
   }
 
   let callback = useCallback(debounced)
-  callback.force = (...args) => {
+  callback.force = (args) => {
     resetTimer()
     execute(args)
   }

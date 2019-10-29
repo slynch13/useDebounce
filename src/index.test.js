@@ -93,4 +93,27 @@ describe('useDebounce', () => {
     obj.debounced(1)
     expect(func.mock.calls.length).toBe(1)
   })
+
+  it('function be called with no arguments works', () => {
+    const func = jest.fn(x => console.log('Test', x))
+    render(<Debounced fn={func} delay={2000} maxWait={1900} />)
+    obj.debounced()
+    expect(func.mock.calls.length).toBe(1)
+    expect(func.mock.calls[0].length).toBe(0)
+  })
+  it('function be called with arguments as parameter values not array', () => {
+    const func = jest.fn()
+    render(<Debounced fn={func} delay={2000} maxWait={1900} />)
+    obj.debounced(1)
+    expect(func.mock.calls.length).toBe(1)
+    expect(func.mock.calls[0]).toEqual([1])
+  })
+
+  it('function be called with arguments as parameter with more then 1 parameter', () => {
+    const func = jest.fn()
+    render(<Debounced fn={func} delay={2000} maxWait={1900} />)
+    obj.debounced(1, 2)
+    expect(func.mock.calls.length).toBe(1)
+    expect(func.mock.calls[0]).toEqual([1, 2])
+  })
 })
