@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 
-export const useDebounce = (func, delay, maxWait, executionOptions = executeAtStart) => {
+export const useDebounce = (func, delay, maxWait, executionOptions = executeAt.start) => {
   let timer = useRef()
   let [wait, setWait] = useState(maxWait)
   let lastExecute = useRef()
@@ -44,6 +44,8 @@ export const useDebounce = (func, delay, maxWait, executionOptions = executeAtSt
   return callback
 }
 
-export const executeAtStart = { start: false, end: true }
-export const executeAtEnd = { start: true, end: false }
-export const executeAtBoth = { start: true, end: true }
+export const executeAt = {
+  start: { start: true, end: false },
+  end: { start: false, end: true },
+  both: { start: true, end: true }
+}

@@ -1,13 +1,13 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { useDebounce, executeStart } from './'
+import { useDebounce, executeAt } from './'
 import PropTypes from 'prop-types'
 
 const realDateNow = Date.now.bind(global.Date)
 jest.useFakeTimers()
 const obj = {}
-const Debounced = ({ fn, delay, maxWait, tail, head }) => {
-  let debounced = useDebounce(fn, delay || 1000, maxWait, { tail: tail, head: head })
+const Debounced = ({ fn, delay, maxWait, executeAt }) => {
+  let debounced = useDebounce(fn, delay || 1000, maxWait, executeAt)
   obj.debounced = debounced
   return <></>
 }
@@ -16,8 +16,7 @@ Debounced.propTypes = {
   fn: PropTypes.func,
   delay: PropTypes.number,
   maxWait: PropTypes.number,
-  tail: PropTypes.bool,
-  head: PropTypes.bool
+  executeAt: PropTypes.object
 
 }
 
@@ -58,7 +57,8 @@ describe('useDebounce', () => {
     obj.debounced(2)
     obj.debounced(3)
     expect(func.mock.calls.length).toBe(2)
-    expect(func.mock.calls[0]).toEqual([1])
+    expect(func.mock.calls[0][0]).toEqual(1)
+    expect(func.mock.calls[1][0]).toEqual(2)
   })
 
   it('function should not be called called multiple times within limit', () => {
@@ -91,10 +91,10 @@ describe('useDebounce', () => {
     obj.debounced(1)
     jest.advanceTimersByTime(900)
     advanceDateNowBy(900)
-    obj.debounced(1)
+    obj.debounced(2)
     jest.advanceTimersByTime(900)
     advanceDateNowBy(900)
-    obj.debounced(1)
+    obj.debounced(3)
     expect(func.mock.calls.length).toBe(1)
   })
 
@@ -120,14 +120,23 @@ describe('useDebounce', () => {
     expect(func.mock.calls.length).toBe(1)
     expect(func.mock.calls[0]).toEqual([1, 2])
   })
-  it('function should be executed with parameters of last call if tail is true', () => {
+  it('function should be executed with parameters of last call if executeAt.end is passed', () => {
     const func = jest.fn(x => console.log('Test', x))
-    render(<Debounced fn={func} delay={2000} maxWait={1900} tail={true} />)
+    render(<Debounced fn={func} delay={2000} maxWait={1900} executeAt={executeAt.end} />)
     obj.debounced(1)
     obj.debounced(2)
     obj.debounced(3)
     expect(func.mock.calls.length).toBe(1)
-    expect(func.mock.calls[0][0][0]).toBe(1)
+    expect(func.mock.calls[0][0]).toBe(3)
+  })
+  it('function should be executed with parameters of first and last calls if executeAt.both is passed', () => {
+    const func = jest.fn(x => console.log('Test', x))
+    render(<Debounced fn={func} delay={2000} maxWait={1900} executeAt={executeAt.both} />)
+    obj.debounced(1)
+    obj.debounced(2)
+    obj.debounced(3)
+    expect(func.mock.calls.length).toBe(2)
+    expect(func.mock.calls[0][0]).toBe(1)
     expect(func.mock.calls[1][0]).toBe(3)
   })
 })
