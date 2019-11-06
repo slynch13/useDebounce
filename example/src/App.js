@@ -7,7 +7,7 @@ const App = () => {
   let [count, setCount] = useState(0)
   let [speed, setSpeed] = useState(1000)
   let delay = 1000
-  let maxWait = 1000
+  let maxWait = 10000
   const debounced = useDebounce((display) => {
     setState(x => x + 1)
   }, delay, maxWait)
