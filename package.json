@@ -4,7 +4,7 @@
   "description": "Hook that implements debounce functionality",
   "author": "slynch13",
   "license": "MIT",
-  "repository": "slynch13/@slynch13/usedebounce",
+  "repository": "slynch13/usedebounce",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
