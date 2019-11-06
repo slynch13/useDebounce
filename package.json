@@ -1,6 +1,6 @@
 {
   "name": "@slynch13/usedebounce",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Hook that implements debounce functionality",
   "author": "slynch13",
   "license": "MIT",
