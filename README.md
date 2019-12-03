@@ -58,7 +58,7 @@ export default App
 
 ## License
 
-MIT © [slynch13](https://github.com/slynch13)
+MIT © [Sean Lynch](https://github.com/slynch13)
 
 ---
 
